@@ -42,8 +42,15 @@ def fetch_required_courses(student):
 
     # Example logic to determine required courses based on the student's major and what they've completed
     if major == "Business":
-        required_courses = ["BUSN 205", "BUSN 211", "BUSN 212", "BUSN 220", 
-                            "BUSN 230", "BUSN 319", "BUSN 320", "BUSN 323"]  # Adjusted for Business major example
+        required_courses = ["BUSN 205", "BUSN 211", "BUSN 212", "BUSN 220", "BUSN 230", 
+                            "BUSN 319", "BUSN 320", "BUSN 323", "BUSN 328", "BUSN 347", 
+                            "BUSN 361", "BUSN 370", "BUSN 376", "BUSN 422", "BUSN 478", 
+                            "BBST 103", "BBST 165", "BBST 209", "BBST 210", "BBST 260", 
+                            "BBST 306", "ARTS 100", "BIOS 100", "BIOS 121", "COMM 200", 
+                            "ENGL 112", "ENGL 220", "ENGL 313", "MATH 190", "MATH 210", 
+                            "MUSC 314", "PHIL 210", "POSC 225", "PSYC 200", "SPAN 100", 
+                            "SPAN 200"]
+  # Adjusted for Business major example
     else:
         required_courses = []  # Add logic for other majors if needed
 

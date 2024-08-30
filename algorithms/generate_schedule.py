@@ -2,12 +2,12 @@ from models.schedule import Schedule
 from models.student import fetch_student_data, fetch_required_courses
 from algorithms.utils import is_time_slot_compatible
 from algorithms.semester_calculations import calculate_available_semesters
-from algorithms.course_sorting import sort_courses
-from algorithms.schedule_helpers import is_course_offered_in_semester, calculate_total_credits
+from algorithms.course_sorting import sort_courses_by_num_prerequisites_fulfilled, reorder_courses_by_prerequisites
+from algorithms.schedule_helpers import is_course_offered_in_semester, calculate_total_credits, plot_course_schedule
 
 def generate_schedule(student_id, preferences):
     try:
-                # Fetch student data and courses from the database
+        # Fetch student data and courses from the database
         student = fetch_student_data(student_id)
         if not student:
             raise ValueError(f"No student found with ID: {student_id}")
@@ -15,10 +15,11 @@ def generate_schedule(student_id, preferences):
 
         # Fetch required courses for the student
         remaining_courses = fetch_required_courses(student)
-        print(f"Remaining courses: {remaining_courses}")
+        #print(f"Remaining courses: {remaining_courses}")
 
         # Calculate the number of available semesters until graduation
-        semesters = calculate_available_semesters(student.expected_graduation)
+
+        semesters = calculate_available_semesters(preferences['expected_graduation'])
         print(f"Available semesters: {semesters}")
 
         # Initialize the schedule and semester load
@@ -27,14 +28,18 @@ def generate_schedule(student_id, preferences):
         max_credits_per_semester = 18
 
         # Sort courses by their prerequisite fulfillment impact
-        sorted_courses = sort_courses(remaining_courses)
-        print(f"Sorted courses by prerequisites fulfillment: {sorted_courses}")
+        sorted_courses = sort_courses_by_num_prerequisites_fulfilled(remaining_courses)
+        new_sorted = reorder_courses_by_prerequisites(sorted_courses, student.completed_courses)
+
+        print(f"{"\033[33m"}Sorted courses by prerequisites fulfillment: {sorted_courses}")
+        print(f"New Sorted courses: {new_sorted}{"\033[0m"}")
 
         # Calculate average credits per semester
         total_credits = calculate_total_credits(sorted_courses)
         avg_credits_per_semester = -(-total_credits // len(semesters))  # Round up to the nearest whole number
+        #avg_credits_per_semester = 18
         print(f"Total credits: {total_credits}")
-        print(f"Average credits per semester: {avg_credits_per_semester}")
+        print(f"Average starting credits per semester: {avg_credits_per_semester}")
 
 
         # Traverse semesters and attempt to add courses to the schedule
@@ -59,7 +64,7 @@ def generate_schedule(student_id, preferences):
                     
                     schedule.add_course(course_code, (semester + " " + term))
                     semester_load[semester] += course_credits
-                    break  # Stop looking at other courses once this course is scheduled in the semester
+                    # Stop looking at other courses once this course is scheduled in the semester
 
         # Handle unscheduled courses
         for course in sorted_courses:
@@ -70,6 +75,7 @@ def generate_schedule(student_id, preferences):
         final_schedule, unscheduled_courses = schedule.get_final_schedule()
         print(f"{"\033[32m"}Final schedule: {final_schedule}{"\033[0m"}")
         print(f"Unscheduled courses: {unscheduled_courses}")
+        plot_course_schedule(final_schedule)
         return final_schedule, unscheduled_courses
 
     except Exception as e:

@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
 def is_course_offered_in_semester(course, semester):
     """
     Checks if a course is offered in the specified semester.
@@ -54,18 +57,13 @@ def is_course_offered_in_semester(semester, course):
         offered_term_parts = offered_term.split()
 
         if offered_term_parts[0] == term:
-            if len(offered_term_parts) == 1:
-                # The course is offered for the full term (e.g., "Fall")
-                return True, "full"
-            elif len(offered_term_parts) == 2 and offered_term_parts[1] in ["A", "B"]:
-                # The course is offered for a sub-term (e.g., "Fall A" or "Fall B")
-                return True, offered_term_parts[1]
+            return True, offered_term_parts[1]
 
     # If no matches were found, return False
     return False, None
 
 
-def initialize_semester_load(semesters, sub_terms=["", " A", " B"]):
+def graph_final_sceduel(semesters, sub_terms=["", " A", " B"]):
     """
     Initialize the semester load dictionary with all semesters and sub-terms.
 
@@ -84,3 +82,61 @@ def initialize_semester_load(semesters, sub_terms=["", " A", " B"]):
     #print(f"Semester Load: {semester_load}")
     #print(f"Semester load initialized with keys: {list(semester_load.keys())}")
     return semester_load
+
+
+def plot_course_schedule(courses: dict[str, str]) -> None:
+    # Initializing dictionary for DataFrame
+    semester_structure = {
+        "Fall 2024": {"A": [], "B": [], "Full": []},
+        "Spring 2025": {"A": [], "B": [], "Full": []},
+        "Summer 2025": {"A": [], "B": [], "Full": []},
+        "Fall 2025": {"A": [], "B": [], "Full": []},
+        "Spring 2026": {"A": [], "B": [], "Full": []},
+        "Summer 2026": {"A": [], "B": [], "Full": []},
+        "Fall 2026": {"A": [], "B": [], "Full": []},
+    }
+
+    # Populate the semester structure
+    for course, period in courses.items():
+        semester, half = period.rsplit(' ', 1)
+        if half in semester_structure[semester]:
+            semester_structure[semester][half].append(course)
+
+    # Convert data to a DataFrame
+    df = pd.DataFrame({
+        semester: {
+            "A": '\n'.join(semester_structure[semester]["A"]),
+            "B": '\n'.join(semester_structure[semester]["B"]),
+            "Full": '\n'.join(semester_structure[semester]["Full"])
+        } for semester in semester_structure
+    }).T
+
+    # Plotting the calendar view
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    ax.set_axis_off()
+    table = ax.table(
+        cellText=df.values,
+        rowLabels=df.index,
+        colLabels=df.columns,
+        cellLoc='center',
+        loc='center'
+    )
+
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1, 4)
+
+    # Highlighting full semester courses with a different color
+    for (i, j), cell in table.get_celld().items():
+        if i == 0 or j == -1:
+            cell.set_text_props(weight='bold', color='white')
+            cell.set_facecolor('#40466e')
+        elif df.iloc[i-1, j-1] != '':
+            if j == 2:  # Full semester
+                cell.set_facecolor('#d6e0f5')
+            else:
+                cell.set_facecolor('#b3cde0')
+
+    ax.set_title('Course Schedule Calendar', fontweight="bold", size=16)
+    plt.show()

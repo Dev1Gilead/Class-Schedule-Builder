@@ -52,11 +52,18 @@ def populate_student_data():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Insert sample student data
+    # Insert the first student
     cursor.execute('''
-    INSERT OR IGNORE INTO students (student_id, completed_courses, major, minor, expected_graduation)
-    VALUES (?, ?, ?, ?, ?)
-    ''', ("123456", "BUSN 101,BUSN 205", "Business", None, "Spring 2027"))
+        INSERT OR IGNORE INTO students (student_id, completed_courses, major, minor, expected_graduation)
+        VALUES (?, ?, ?, ?, ?)
+        ''', ("123456", "BUSN 101,BUSN 205,MATH 190", "Business", None, "Spring 2027"))
+
+    # Insert the second student
+    cursor.execute('''
+        INSERT OR IGNORE INTO students (student_id, completed_courses, major, minor, expected_graduation)
+        VALUES (?, ?, ?, ?, ?)
+        ''', ("654321", "CS 101,CS 102", "Business", "None", "Fall 2026"))
+
     #do not include spaces in the above list of classes taken
     
     conn.commit()

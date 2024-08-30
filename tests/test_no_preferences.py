@@ -11,7 +11,8 @@ class TestGenerateSchedule(unittest.TestCase):
         # Example preferences (no specific preferences for this simple test)
         preferences = {
             'preferred_days': [],
-            'preferred_times': []
+            'preferred_times': [],
+            'expected_graduation': 'Spring 2027'
         }
         
         # Fetch the student data to ensure the student exists
