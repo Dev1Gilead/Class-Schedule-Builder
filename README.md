@@ -12,8 +12,5 @@ This project is a Python application to generate class schedules for students ba
 - `models/`: Contains data models for the application.
 - `algorithms/`: Contains the core scheduling algorithm.
 - `tests/`: Contains unit tests for the application.
-- `web/`: Contains a simple Flask web application.
+- `web/`: Contains a simple Flask web application. (not yet implemented)
 
-## Getting Started
-
-1. Clone the repository:
