@@ -1,6 +1,3 @@
-import matplotlib.pyplot as plt
-import pandas as pd
-
 def is_course_offered_in_semester(course, semester):
     """
     Checks if a course is offered in the specified semester.
@@ -63,7 +60,7 @@ def is_course_offered_in_semester(semester, course):
     return False, None
 
 
-def graph_final_sceduel(semesters, sub_terms=["", " A", " B"]):
+def initialize_semester_load(semesters, sub_terms=["", " A", " B"]):
     """
     Initialize the semester load dictionary with all semesters and sub-terms.
 
@@ -83,6 +80,9 @@ def graph_final_sceduel(semesters, sub_terms=["", " A", " B"]):
     #print(f"Semester load initialized with keys: {list(semester_load.keys())}")
     return semester_load
 
+
+import matplotlib.pyplot as plt
+import pandas as pd
 
 def plot_course_schedule(courses: dict[str, str]) -> None:
     # Initializing dictionary for DataFrame
