@@ -22,3 +22,8 @@ class Schedule:
     def get_scheduled_courses(self):
         """Return a list of all scheduled courses."""
         return list(self.courses.keys())
+
+    def clear(self):
+        """Clear the schedule, removing all courses and unscheduled courses."""
+        self.courses.clear()
+        self.unscheduled_courses.clear()
